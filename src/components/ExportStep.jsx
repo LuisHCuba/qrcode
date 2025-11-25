@@ -161,18 +161,35 @@ function ExportStep({
         if (compositeImages.length >= artsPerPage || i === totalQRCodes - 1) {
           const page = pdfDoc.addPage([pageWidth, pageHeight])
           
-          // Calcular grid para distribuir artes na página
-          const cols = Math.ceil(Math.sqrt(artsPerPage))
+          // Calcular grid para distribuir artes na página (mesmo algoritmo do LayoutConfigStep)
+          const calculateGrid = (count) => {
+            if (count === 1) return { rows: 1, cols: 1 }
+            if (count === 2) return { rows: 1, cols: 2 }
+            if (count <= 4) return { rows: 2, cols: 2 }
+            if (count <= 6) return { rows: 2, cols: 3 }
+            if (count <= 9) return { rows: 3, cols: 3 }
+            if (count <= 12) return { rows: 3, cols: 4 }
+            if (count <= 16) return { rows: 4, cols: 4 }
+            return { rows: Math.ceil(Math.sqrt(count)), cols: Math.ceil(count / Math.ceil(Math.sqrt(count))) }
+          }
+          const grid = calculateGrid(artsPerPage)
+          const cols = grid.cols
           const rows = Math.ceil(compositeImages.length / cols)
-          const artWidth = (pageWidth - layoutConfig.margin * (cols + 1)) / cols
-          const artHeight = (pageHeight - layoutConfig.margin * (rows + 1)) / rows
+          const spacing = layoutConfig.spacing || 10
+          const margin = layoutConfig.margin || 20
+          
+          // Calcular dimensões das artes considerando margem externa e espaçamento interno
+          const totalSpacingWidth = margin * 2 + spacing * (cols - 1)
+          const totalSpacingHeight = margin * 2 + spacing * (rows - 1)
+          const artWidth = (pageWidth - totalSpacingWidth) / cols
+          const artHeight = (pageHeight - totalSpacingHeight) / rows
           
           for (let j = 0; j < compositeImages.length; j++) {
             const col = j % cols
             const row = Math.floor(j / cols)
             
-            const x = layoutConfig.margin + col * (artWidth + layoutConfig.margin)
-            const y = pageHeight - layoutConfig.margin - (row + 1) * artHeight + layoutConfig.margin
+            const x = margin + col * (artWidth + spacing)
+            const y = pageHeight - margin - (row + 1) * artHeight - row * spacing
             
             // Embed PNG sem compressão adicional
             const image = await pdfDoc.embedPng(await compositeImages[j].arrayBuffer())
@@ -256,7 +273,8 @@ function ExportStep({
             <strong>Tamanho da Página:</strong> {layoutConfig.pageSize} ({layoutConfig.orientation})
           </div>
           <div className="summary-item">
-            <strong>Margem:</strong> {layoutConfig.margin}px
+            <strong>Margem Externa:</strong> {layoutConfig.margin || 20}px<br />
+            <strong>Espaçamento Entre Artes:</strong> {layoutConfig.spacing || 10}px
           </div>
           <div className="summary-item">
             <strong>Páginas Estimadas:</strong> {Math.ceil(extractedQRCodes.length / layoutConfig.artsPerPage)}

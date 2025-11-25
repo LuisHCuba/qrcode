@@ -90,6 +90,9 @@ function App() {
         )}
         {currentStep === STEPS.LAYOUT_CONFIG && (
           <LayoutConfigStep 
+            artImage={artImage}
+            artQRArea={artQRArea}
+            extractedQRCodes={extractedQRCodes}
             onComplete={handleLayoutConfigured}
             onBack={() => setCurrentStep(STEPS.ART_EDITOR)}
           />
