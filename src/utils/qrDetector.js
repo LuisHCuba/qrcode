@@ -19,6 +19,11 @@ export function extractQRCodeFromCanvas(canvas, x, y, width, height) {
   tempCanvas.width = width
   tempCanvas.height = height
   
+  // Configurar alta qualidade no contexto
+  tempCtx.imageSmoothingEnabled = true
+  tempCtx.imageSmoothingQuality = 'high'
+  
+  // Extrair QR code mantendo qualidade original
   tempCtx.drawImage(canvas, x, y, width, height, 0, 0, width, height)
   
   const imageData = tempCtx.getImageData(0, 0, width, height)
@@ -27,4 +32,5 @@ export function extractQRCodeFromCanvas(canvas, x, y, width, height) {
     imageData: imageData
   }
 }
+
 

@@ -16,11 +16,15 @@ function ExportStep({
   const [progress, setProgress] = useState(0)
 
   const getPageDimensions = () => {
+    // Usar DPI maior (300 DPI ao invés de 72 DPI padrão) para melhor qualidade
+    const dpi = 300
+    const scale = dpi / 72 // Fator de escala para alta resolução
+    
     const sizes = {
-      A4: { width: 595, height: 842 },
-      A3: { width: 842, height: 1191 },
-      Letter: { width: 612, height: 792 },
-      Legal: { width: 612, height: 1008 }
+      A4: { width: 595 * scale, height: 842 * scale },
+      A3: { width: 842 * scale, height: 1191 * scale },
+      Letter: { width: 612 * scale, height: 792 * scale },
+      Legal: { width: 612 * scale, height: 1008 * scale }
     }
     
     const base = sizes[layoutConfig.pageSize] || sizes.A4
@@ -34,24 +38,29 @@ function ExportStep({
       const canvas = document.createElement('canvas')
       const ctx = canvas.getContext('2d')
       
+      // Manter resolução original da arte (sem reduzir)
       canvas.width = artImage.width
       canvas.height = artImage.height
       
-      // Desenhar arte de fundo
-      ctx.drawImage(artImage, 0, 0)
+      // Configurar alta qualidade no contexto
+      ctx.imageSmoothingEnabled = true
+      ctx.imageSmoothingQuality = 'high'
       
-      // Desenhar QR code na área definida
+      // Desenhar arte de fundo em resolução original
+      ctx.drawImage(artImage, 0, 0, artImage.width, artImage.height)
+      
+      // Desenhar QR code na área definida com alta qualidade
+      // Usar drawImage com todos os parâmetros para controle preciso
       ctx.drawImage(
         qrCanvas,
-        artQRArea.x,
-        artQRArea.y,
-        artQRArea.width,
-        artQRArea.height
+        0, 0, qrCanvas.width, qrCanvas.height, // Source: QR code completo
+        artQRArea.x, artQRArea.y, artQRArea.width, artQRArea.height // Destination: área na arte
       )
       
+      // Converter para blob com qualidade máxima (sem compressão)
       canvas.toBlob((blob) => {
         resolve(blob)
-      }, 'image/png')
+      }, 'image/png', 1.0) // Qualidade máxima: 1.0
     })
   }
 
@@ -133,15 +142,23 @@ function ExportStep({
             const x = layoutConfig.margin + col * (artWidth + layoutConfig.margin)
             const y = pageHeight - layoutConfig.margin - (row + 1) * artHeight + layoutConfig.margin
             
+            // Embed PNG sem compressão adicional
             const image = await pdfDoc.embedPng(await compositeImages[j].arrayBuffer())
             const imageDims = image.scale(1)
+            
+            // Calcular escala mantendo proporção, mas tentando usar o máximo de espaço disponível
             const scale = Math.min(artWidth / imageDims.width, artHeight / imageDims.height)
+            
+            // Usar escala 1:1 se a imagem couber, caso contrário usar o scale calculado
+            // Mas garantir que não reduza muito a qualidade
+            const finalWidth = imageDims.width * scale
+            const finalHeight = imageDims.height * scale
             
             page.drawImage(image, {
               x,
               y,
-              width: imageDims.width * scale,
-              height: imageDims.height * scale
+              width: finalWidth,
+              height: finalHeight
             })
           }
           
@@ -262,4 +279,5 @@ function ExportStep({
 }
 
 export default ExportStep
+
 

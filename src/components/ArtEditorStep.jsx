@@ -30,7 +30,7 @@ function ArtEditorStep({ onComplete, onBack }) {
           return
         }
         
-        // Usar primeira página do PDF
+        // Usar primeira página do PDF em alta qualidade
         const firstPage = pages[0]
         const img = new window.Image()
         img.onload = () => {
@@ -38,7 +38,8 @@ function ArtEditorStep({ onComplete, onBack }) {
           setQrArea(null)
           setLoading(false)
         }
-        img.src = firstPage.canvas.toDataURL('image/png')
+        // Usar qualidade máxima (sem compressão)
+        img.src = firstPage.canvas.toDataURL('image/png', 1.0)
       } else if (file.type.startsWith('image/')) {
         // Processar imagem
         const reader = new FileReader()

@@ -9,12 +9,17 @@ export async function loadPDF(file) {
   const pages = []
   for (let i = 1; i <= pdf.numPages; i++) {
     const page = await pdf.getPage(i)
-    const viewport = page.getViewport({ scale: 2.0 })
+    // Aumentar escala para melhor qualidade (3.0 ao invés de 2.0)
+    const viewport = page.getViewport({ scale: 3.0 })
     
     const canvas = document.createElement('canvas')
     const context = canvas.getContext('2d')
     canvas.height = viewport.height
     canvas.width = viewport.width
+    
+    // Configurar alta qualidade no contexto
+    context.imageSmoothingEnabled = true
+    context.imageSmoothingQuality = 'high'
     
     await page.render({
       canvasContext: context,
@@ -30,4 +35,5 @@ export async function loadPDF(file) {
   
   return pages
 }
+
 
