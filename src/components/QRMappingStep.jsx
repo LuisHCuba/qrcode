@@ -5,9 +5,9 @@ import './QRMappingStep.css'
 
 function QRMappingStep({ pdfPages, onComplete, onBack }) {
   const [currentPageIndex, setCurrentPageIndex] = useState(0)
-  const [grid, setGrid] = useState({ rows: 2, cols: 3 })
-  const [gridSpacing, setGridSpacing] = useState({ horizontal: 0, vertical: 0 })
-  const [gridPadding, setGridPadding] = useState({ top: 0, right: 0, bottom: 0, left: 0 })
+  const [grid, setGrid] = useState({ rows: 3, cols: 2 })
+  const [gridSpacing, setGridSpacing] = useState({ horizontal: 250, vertical: 250 })
+  const [gridPadding, setGridPadding] = useState({ top: 250, right: 250, bottom: 250, left: 250 })
   const [qrAreas, setQrAreas] = useState([])
   const [isDrawing, setIsDrawing] = useState(false)
   const [currentRect, setCurrentRect] = useState(null)
@@ -20,6 +20,10 @@ function QRMappingStep({ pdfPages, onComplete, onBack }) {
   useEffect(() => {
     if (canvas) {
       canvasRef.current = canvas
+      // Gerar grid automaticamente quando o canvas carregar com os valores padrão
+      if (qrAreas.length === 0) {
+        generateGridAreas(grid, gridSpacing, gridPadding)
+      }
     }
   }, [canvas])
 

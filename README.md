@@ -42,3 +42,18 @@ A aplicação estará disponível em `http://localhost:5173`
 - jsQR (detecção de QR codes)
 - Konva/React-Konva (edição visual)
 
+
+
+DEPLOY
+
+# 1. Verificar o status (opcional, para ver o que será commitado)
+git status
+
+# 2. Adicionar todos os arquivos modificados
+git add .
+
+# 3. Fazer commit com mensagem descritiva
+git commit -m "Melhorias de qualidade: alta resolução em todas as etapas (300 DPI, sem compressão)"
+
+# 4. Fazer push para o repositório
+git push origin main
