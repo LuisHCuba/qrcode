@@ -9,8 +9,8 @@ export async function loadPDF(file) {
   const pages = []
   for (let i = 1; i <= pdf.numPages; i++) {
     const page = await pdf.getPage(i)
-    // Aumentar escala para melhor qualidade (3.0 ao invés de 2.0)
-    const viewport = page.getViewport({ scale: 3.0 })
+    // Escala MÁXIMA para qualidade profissional (4.0 = ~300 DPI)
+    const viewport = page.getViewport({ scale: 4.0 })
     
     const canvas = document.createElement('canvas')
     const context = canvas.getContext('2d')

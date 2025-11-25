@@ -16,8 +16,8 @@ function ExportStep({
   const [progress, setProgress] = useState(0)
 
   const getPageDimensions = () => {
-    // Usar DPI maior (300 DPI ao invés de 72 DPI padrão) para melhor qualidade
-    const dpi = 300
+    // Usar DPI MÁXIMO (600 DPI) para qualidade profissional absoluta
+    const dpi = 600
     const scale = dpi / 72 // Fator de escala para alta resolução
     
     const sizes = {
@@ -38,29 +38,61 @@ function ExportStep({
       const canvas = document.createElement('canvas')
       const ctx = canvas.getContext('2d')
       
-      // Manter resolução original da arte (sem reduzir)
-      canvas.width = artImage.width
-      canvas.height = artImage.height
+      // IMPORTANTE: Manter resolução NATIVA da arte (não usar artImage.width/height se foram reduzidos)
+      // Usar as dimensões reais da imagem carregada
+      const artWidth = artImage.naturalWidth || artImage.width
+      const artHeight = artImage.naturalHeight || artImage.height
+      
+      canvas.width = artWidth
+      canvas.height = artHeight
       
       // Configurar alta qualidade no contexto
-      ctx.imageSmoothingEnabled = true
+      ctx.imageSmoothingEnabled = false // Desabilitar suavização para manter pixels nítidos
       ctx.imageSmoothingQuality = 'high'
       
-      // Desenhar arte de fundo em resolução original
-      ctx.drawImage(artImage, 0, 0, artImage.width, artImage.height)
+      // Desenhar arte de fundo em resolução NATIVA completa
+      ctx.drawImage(artImage, 0, 0, artWidth, artHeight)
       
-      // Desenhar QR code na área definida com alta qualidade
-      // Usar drawImage com todos os parâmetros para controle preciso
+      // Calcular área do QR code em coordenadas da imagem NATIVA
+      // Se a imagem foi exibida em tamanho menor, calcular o fator de escala
+      const displayWidth = artImage.width || artWidth
+      const displayHeight = artImage.height || artHeight
+      const scaleX = artWidth / displayWidth
+      const scaleY = artHeight / displayHeight
+      
+      const qrX = artQRArea.x * scaleX
+      const qrY = artQRArea.y * scaleY
+      const qrWidth = artQRArea.width * scaleX
+      const qrHeight = artQRArea.height * scaleY
+      
+      // IMPORTANTE: Desabilitar suavização ao inserir QR code para manter pixels nítidos
+      ctx.imageSmoothingEnabled = false
+      
+      // Desenhar QR code na área definida mantendo qualidade máxima
+      // Usar o tamanho EXATO do QR code extraído, sem reduzir
       ctx.drawImage(
         qrCanvas,
-        0, 0, qrCanvas.width, qrCanvas.height, // Source: QR code completo
-        artQRArea.x, artQRArea.y, artQRArea.width, artQRArea.height // Destination: área na arte
+        0, 0, qrCanvas.width, qrCanvas.height, // Source: QR code completo em resolução original
+        qrX, qrY, qrWidth, qrHeight // Destination: área na arte em escala nativa
       )
       
+      // Reabilitar suavização para a arte de fundo (se necessário)
+      ctx.imageSmoothingEnabled = true
+      
       // Converter para blob com qualidade máxima (sem compressão)
-      canvas.toBlob((blob) => {
-        resolve(blob)
-      }, 'image/png', 1.0) // Qualidade máxima: 1.0
+      // Usar toDataURL primeiro para garantir qualidade máxima
+      const dataUrl = canvas.toDataURL('image/png', 1.0)
+      
+      // Converter dataURL para blob mantendo qualidade
+      fetch(dataUrl)
+        .then(res => res.blob())
+        .then(blob => resolve(blob))
+        .catch(() => {
+          // Fallback: usar toBlob direto
+          canvas.toBlob((blob) => {
+            resolve(blob)
+          }, 'image/png', 1.0)
+        })
     })
   }
 
@@ -146,17 +178,25 @@ function ExportStep({
             const image = await pdfDoc.embedPng(await compositeImages[j].arrayBuffer())
             const imageDims = image.scale(1)
             
-            // Calcular escala mantendo proporção, mas tentando usar o máximo de espaço disponível
-            const scale = Math.min(artWidth / imageDims.width, artHeight / imageDims.height)
+            // NÃO REDUZIR A IMAGEM - usar escala 1:1 sempre para manter qualidade máxima
+            // Se a imagem for maior que o espaço, ela será cortada, mas mantém qualidade
+            // Se for menor, será centralizada sem aumentar (evita pixelização)
+            const scale = Math.min(
+              artWidth / imageDims.width, 
+              artHeight / imageDims.height,
+              1.0 // NUNCA aumentar além do tamanho original
+            )
             
-            // Usar escala 1:1 se a imagem couber, caso contrário usar o scale calculado
-            // Mas garantir que não reduza muito a qualidade
             const finalWidth = imageDims.width * scale
             const finalHeight = imageDims.height * scale
             
+            // Centralizar se a imagem for menor que o espaço disponível
+            const centeredX = x + (artWidth - finalWidth) / 2
+            const centeredY = y + (artHeight - finalHeight) / 2
+            
             page.drawImage(image, {
-              x,
-              y,
+              x: centeredX,
+              y: centeredY,
               width: finalWidth,
               height: finalHeight
             })

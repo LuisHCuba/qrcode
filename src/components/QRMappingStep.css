@@ -59,6 +59,52 @@
   border-radius: 4px;
 }
 
+.grid-spacing-config,
+.grid-padding-config {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 6px;
+  border: 1px solid #e9ecef;
+}
+
+.grid-spacing-config h4,
+.grid-padding-config h4 {
+  margin-bottom: 0.75rem;
+  color: #2c3e50;
+  font-size: 0.95rem;
+}
+
+.spacing-inputs,
+.padding-inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.spacing-inputs label,
+.padding-inputs label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  font-size: 0.9rem;
+}
+
+.spacing-inputs input,
+.padding-inputs input {
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+.spacing-inputs input:focus,
+.padding-inputs input:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.1);
+}
+
 .mapping-canvas {
   background: white;
   padding: 1.5rem;

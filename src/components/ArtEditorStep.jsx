@@ -41,18 +41,17 @@ function ArtEditorStep({ onComplete, onBack }) {
         // Usar qualidade máxima (sem compressão)
         img.src = firstPage.canvas.toDataURL('image/png', 1.0)
       } else if (file.type.startsWith('image/')) {
-        // Processar imagem
-        const reader = new FileReader()
-        reader.onload = (event) => {
-          const img = new window.Image()
-          img.onload = () => {
-            setArtImage(img)
-            setQrArea(null)
-            setLoading(false)
-          }
-          img.src = event.target.result
+        // Processar imagem mantendo resolução NATIVA
+        const img = new window.Image()
+        img.onload = () => {
+          setArtImage(img)
+          setQrArea(null)
+          setLoading(false)
         }
-        reader.readAsDataURL(file)
+        // Carregar diretamente do arquivo para manter resolução original
+        const objectUrl = URL.createObjectURL(file)
+        img.src = objectUrl
+        // Não revogar URL até o componente desmontar para manter referência
       } else {
         alert('Por favor, selecione um arquivo PDF ou imagem válido')
         setLoading(false)

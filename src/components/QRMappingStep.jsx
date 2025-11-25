@@ -6,6 +6,8 @@ import './QRMappingStep.css'
 function QRMappingStep({ pdfPages, onComplete, onBack }) {
   const [currentPageIndex, setCurrentPageIndex] = useState(0)
   const [grid, setGrid] = useState({ rows: 2, cols: 3 })
+  const [gridSpacing, setGridSpacing] = useState({ horizontal: 0, vertical: 0 })
+  const [gridPadding, setGridPadding] = useState({ top: 0, right: 0, bottom: 0, left: 0 })
   const [qrAreas, setQrAreas] = useState([])
   const [isDrawing, setIsDrawing] = useState(false)
   const [currentRect, setCurrentRect] = useState(null)
@@ -24,23 +26,48 @@ function QRMappingStep({ pdfPages, onComplete, onBack }) {
   const handleGridChange = (type, value) => {
     const newGrid = { ...grid, [type]: parseInt(value) || 1 }
     setGrid(newGrid)
-    generateGridAreas(newGrid)
+    generateGridAreas(newGrid, gridSpacing, gridPadding)
   }
 
-  const generateGridAreas = (gridConfig) => {
+  const handleSpacingChange = (type, value) => {
+    const newSpacing = { ...gridSpacing, [type]: parseFloat(value) || 0 }
+    setGridSpacing(newSpacing)
+    generateGridAreas(grid, newSpacing, gridPadding)
+  }
+
+  const handlePaddingChange = (type, value) => {
+    const newPadding = { ...gridPadding, [type]: parseFloat(value) || 0 }
+    setGridPadding(newPadding)
+    generateGridAreas(grid, gridSpacing, newPadding)
+  }
+
+  const generateGridAreas = (gridConfig, spacing = gridSpacing, padding = gridPadding) => {
     if (!canvas) return
     
     const width = canvas.width
     const height = canvas.height
-    const cellWidth = width / gridConfig.cols
-    const cellHeight = height / gridConfig.rows
+    
+    // Calcular área disponível após padding
+    const availableWidth = width - padding.left - padding.right
+    const availableHeight = height - padding.top - padding.bottom
+    
+    // Calcular espaçamento total necessário
+    const totalHorizontalSpacing = spacing.horizontal * (gridConfig.cols - 1)
+    const totalVerticalSpacing = spacing.vertical * (gridConfig.rows - 1)
+    
+    // Calcular tamanho de cada célula considerando espaçamentos
+    const cellWidth = (availableWidth - totalHorizontalSpacing) / gridConfig.cols
+    const cellHeight = (availableHeight - totalVerticalSpacing) / gridConfig.rows
     
     const areas = []
     for (let row = 0; row < gridConfig.rows; row++) {
       for (let col = 0; col < gridConfig.cols; col++) {
+        const x = padding.left + col * (cellWidth + spacing.horizontal)
+        const y = padding.top + row * (cellHeight + spacing.vertical)
+        
         areas.push({
-          x: col * cellWidth,
-          y: row * cellHeight,
+          x: x,
+          y: y,
           width: cellWidth,
           height: cellHeight,
           row,
@@ -231,9 +258,81 @@ function QRMappingStep({ pdfPages, onComplete, onBack }) {
                 onChange={(e) => handleGridChange('cols', e.target.value)}
               />
             </label>
-            <button onClick={() => generateGridAreas(grid)} className="btn-primary">
+            <button onClick={() => generateGridAreas(grid, gridSpacing, gridPadding)} className="btn-primary">
               Gerar Grid
             </button>
+          </div>
+
+          <div className="grid-spacing-config">
+            <h4>Espaçamento Entre Quadros</h4>
+            <div className="spacing-inputs">
+              <label>
+                Horizontal (px):
+                <input
+                  type="number"
+                  min="0"
+                  step="1"
+                  value={gridSpacing.horizontal}
+                  onChange={(e) => handleSpacingChange('horizontal', e.target.value)}
+                />
+              </label>
+              <label>
+                Vertical (px):
+                <input
+                  type="number"
+                  min="0"
+                  step="1"
+                  value={gridSpacing.vertical}
+                  onChange={(e) => handleSpacingChange('vertical', e.target.value)}
+                />
+              </label>
+            </div>
+          </div>
+
+          <div className="grid-padding-config">
+            <h4>Padding (Margens)</h4>
+            <div className="padding-inputs">
+              <label>
+                Topo (px):
+                <input
+                  type="number"
+                  min="0"
+                  step="1"
+                  value={gridPadding.top}
+                  onChange={(e) => handlePaddingChange('top', e.target.value)}
+                />
+              </label>
+              <label>
+                Direita (px):
+                <input
+                  type="number"
+                  min="0"
+                  step="1"
+                  value={gridPadding.right}
+                  onChange={(e) => handlePaddingChange('right', e.target.value)}
+                />
+              </label>
+              <label>
+                Inferior (px):
+                <input
+                  type="number"
+                  min="0"
+                  step="1"
+                  value={gridPadding.bottom}
+                  onChange={(e) => handlePaddingChange('bottom', e.target.value)}
+                />
+              </label>
+              <label>
+                Esquerda (px):
+                <input
+                  type="number"
+                  min="0"
+                  step="1"
+                  value={gridPadding.left}
+                  onChange={(e) => handlePaddingChange('left', e.target.value)}
+                />
+              </label>
+            </div>
           </div>
 
           <div className="areas-list">
