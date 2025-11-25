@@ -1,0 +1,147 @@
+.layout-config-step {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.layout-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.layout-header h2 {
+  color: #2c3e50;
+}
+
+.layout-content {
+  display: grid;
+  grid-template-columns: 400px 1fr;
+  gap: 2rem;
+}
+
+.config-panel {
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  height: fit-content;
+}
+
+.config-group {
+  margin-bottom: 2rem;
+}
+
+.config-group label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  font-weight: 500;
+  color: #2c3e50;
+}
+
+.config-group input,
+.config-group select {
+  padding: 0.7rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.config-group input:focus,
+.config-group select:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+.hint {
+  font-size: 0.85rem;
+  color: #666;
+  margin-top: 0.3rem;
+  font-style: italic;
+}
+
+.preview-panel {
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.preview-panel h3 {
+  margin-bottom: 1.5rem;
+  color: #2c3e50;
+}
+
+.preview-visualization {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+  background: #f9f9f9;
+  border-radius: 4px;
+  padding: 2rem;
+}
+
+.preview-page {
+  background: white;
+  border: 2px solid #ddd;
+  border-radius: 4px;
+  padding: 1rem;
+  display: grid;
+  gap: 1rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.preview-page[data-orientation="portrait"] {
+  width: 200px;
+  height: 280px;
+  grid-template-columns: 1fr;
+}
+
+.preview-page[data-orientation="landscape"] {
+  width: 280px;
+  height: 200px;
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.preview-art {
+  background: #e3f2fd;
+  border: 2px dashed #2196f3;
+  border-radius: 4px;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 80px;
+  color: #1976d2;
+  font-weight: 500;
+}
+
+.preview-more {
+  background: #fff3e0;
+  border: 2px dashed #ff9800;
+  border-radius: 4px;
+  padding: 1rem;
+  text-align: center;
+  color: #f57c00;
+  font-weight: 500;
+}
+
+.preview-note {
+  margin-top: 1rem;
+  text-align: center;
+  color: #666;
+  font-size: 0.9rem;
+  font-style: italic;
+}
+
+@media (max-width: 1024px) {
+  .layout-content {
+    grid-template-columns: 1fr;
+  }
+}
+

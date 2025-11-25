@@ -1,0 +1,45 @@
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-header {
+  background: #2c3e50;
+  color: white;
+  padding: 1.5rem 2rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.app-header h1 {
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+}
+
+.step-indicator {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.step {
+  padding: 0.5rem 1rem;
+  background: rgba(255,255,255,0.1);
+  border-radius: 4px;
+  font-size: 0.9rem;
+  transition: all 0.3s;
+}
+
+.step.active {
+  background: #3498db;
+  font-weight: bold;
+}
+
+.app-main {
+  flex: 1;
+  padding: 2rem;
+  max-width: 1400px;
+  width: 100%;
+  margin: 0 auto;
+}
+

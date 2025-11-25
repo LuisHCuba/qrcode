@@ -1,0 +1,140 @@
+.art-editor-step {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.art-editor-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.art-editor-header h2 {
+  color: #2c3e50;
+}
+
+.art-editor-content {
+  display: grid;
+  grid-template-columns: 350px 1fr;
+  gap: 2rem;
+}
+
+.art-config {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  height: fit-content;
+}
+
+.art-config h3 {
+  margin-bottom: 1rem;
+  color: #2c3e50;
+}
+
+.file-info {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: #f5f5f5;
+  border-radius: 4px;
+}
+
+.file-info p {
+  margin: 0.5rem 0;
+  font-size: 0.9rem;
+}
+
+.area-info {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background: #e8f5e9;
+  border-radius: 4px;
+  border-left: 4px solid #4caf50;
+}
+
+.area-info h4 {
+  margin-bottom: 0.5rem;
+  color: #2c3e50;
+}
+
+.area-info p {
+  margin: 0.3rem 0;
+  font-size: 0.9rem;
+}
+
+.btn-small {
+  margin-top: 0.5rem;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.9rem;
+}
+
+.instructions {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background: #fff3cd;
+  border-radius: 4px;
+  border-left: 4px solid #ffc107;
+}
+
+.instructions h4 {
+  margin-bottom: 0.5rem;
+  color: #2c3e50;
+}
+
+.instructions ol {
+  margin-left: 1.5rem;
+  line-height: 1.8;
+}
+
+.instructions li {
+  margin: 0.5rem 0;
+}
+
+.art-canvas {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.canvas-wrapper {
+  border: 2px solid #ddd;
+  border-radius: 4px;
+  overflow: auto;
+  max-height: 70vh;
+  display: flex;
+  justify-content: center;
+  background: #f9f9f9;
+}
+
+.canvas-hint {
+  margin-top: 1rem;
+  text-align: center;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.empty-canvas {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  background: #f9f9f9;
+  border: 2px dashed #ddd;
+  border-radius: 4px;
+}
+
+.empty-canvas p {
+  color: #999;
+  font-size: 1.1rem;
+}
+
+@media (max-width: 1024px) {
+  .art-editor-content {
+    grid-template-columns: 1fr;
+  }
+}
+

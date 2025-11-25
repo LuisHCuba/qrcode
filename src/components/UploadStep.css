@@ -1,0 +1,60 @@
+.upload-step {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 60vh;
+}
+
+.upload-container {
+  background: white;
+  padding: 3rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  text-align: center;
+  max-width: 600px;
+  width: 100%;
+}
+
+.upload-container h2 {
+  margin-bottom: 1rem;
+  color: #2c3e50;
+}
+
+.description {
+  color: #666;
+  margin-bottom: 2rem;
+  line-height: 1.6;
+}
+
+.upload-area {
+  margin: 2rem 0;
+}
+
+.upload-button {
+  display: inline-block;
+  padding: 1rem 2rem;
+  background: #3498db;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1.1rem;
+  transition: background 0.3s;
+}
+
+.upload-button:hover {
+  background: #2980b9;
+}
+
+.upload-button:disabled {
+  background: #95a5a6;
+  cursor: not-allowed;
+}
+
+.error-message {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: #e74c3c;
+  color: white;
+  border-radius: 4px;
+}
+
